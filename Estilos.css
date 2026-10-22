@@ -1,0 +1,187 @@
+/* estilos.css */
+
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    margin: 40px; 
+    background-color: #f8f9fa; 
+    color: #333; 
+}
+
+.contenedor { 
+    max-width: 450px; 
+    background: white; 
+    padding: 25px; 
+    border-radius: 12px; 
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.08); 
+    margin: 0 auto; 
+}
+
+h2 { 
+    text-align: center; 
+    color: #dc3545; 
+    margin-bottom: 20px; 
+}
+
+.seccion { 
+    margin-bottom: 20px; 
+    padding-bottom: 15px; 
+    border-bottom: 1px dashed #ddd; 
+}
+
+label { 
+    display: block; 
+    margin-bottom: 8px; 
+    font-weight: bold; 
+}
+
+select { 
+    width: 100%; 
+    padding: 10px; 
+    border-radius: 6px; 
+    border: 1px solid #ccc; 
+    font-size: 15px; 
+}
+
+select, input[type="radio"], input[type="checkbox"] { 
+    cursor: pointer; 
+}
+
+.opciones-inline { 
+    display: flex; 
+    gap: 15px; 
+    align-items: center; 
+}
+
+.checkbox-group { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 10px; 
+}
+
+.checkbox-item { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+}
+
+button { 
+    width: 100%; 
+    padding: 12px; 
+    background-color: #28a745; 
+    color: white; 
+    border: none; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-size: 16px; 
+    font-weight: bold; 
+    transition: background 0.2s; 
+}
+
+button:hover { 
+    background-color: #218838; 
+}
+
+#reciboRespuesta { 
+    margin-top: 20px; 
+    padding: 15px; 
+    border-radius: 6px; 
+    display: none; 
+    background-color: #fff3cd; 
+    border: 1px solid #ffeeba; 
+}
+
+/* ===== PANEL DE ADMINISTRACIÓN ===== */
+
+.panel-admin {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #eee;
+}
+
+.panel-admin h3 {
+    text-align: center;
+    color: #495057;
+    margin-bottom: 15px;
+}
+
+.btn-azul {
+    background-color: #007bff !important;
+}
+.btn-azul:hover {
+    background-color: #0056b3 !important;
+}
+
+.btn-rojo {
+    background-color: #dc3545 !important;
+}
+.btn-rojo:hover {
+    background-color: #bd2130 !important;
+}
+
+#tablaHistorial {
+    margin-top: 15px;
+    max-height: 250px;
+    overflow-y: auto;
+    font-size: 13px;
+    background: #f1f3f5;
+    border-radius: 6px;
+    padding: 10px;
+    display: none;
+}
+
+.item-pedido {
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border-left: 4px solid #28a745;
+}
+
+/* ===== NUEVO: LOGIN, PUNTOS Y ENTREGA ===== */
+
+input[type="text"], textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    font-family: inherit;
+}
+
+textarea {
+    resize: vertical;
+}
+
+#barraCliente {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    background: #e7f1ff;
+    border: 1px solid #b6d4fe;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+#barraCliente button {
+    width: auto;
+    padding: 8px 14px;
+    font-size: 14px;
+}
+
+.btn-gris {
+    background-color: #6c757d !important;
+}
+.btn-gris:hover {
+    background-color: #565e64 !important;
+}
+
+#infoPuntos {
+    display: block;
+    margin-top: 8px;
+    color: #6c757d;
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Caja Registradora - Restaurante</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+    <!-- ========================================== -->
+    <!-- MODIFICACIÓN 1: PANTALLA DE INICIO DE SESIÓN -->
+    <!-- ========================================== -->
+    <div class="contenedor" id="pantallaLogin">
+        <h2>🔐 Iniciar Sesión</h2>
+        <form id="formularioLogin">
+            <div class="seccion">
+                <label for="loginNombre">Nombre completo:</label>
+                <input type="text" id="loginNombre" placeholder="Ej. Juan Pérez" required>
+            </div>
+            <div class="seccion">
+                <label for="loginCarnet">Carnet:</label>
+                <input type="text" id="loginCarnet" placeholder="Ej. 2026001" required>
+            </div>
+            <button type="submit">Ingresar al Sistema</button>
+        </form>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PÁGINA PRINCIPAL (oculta hasta iniciar sesión) -->
+    <!-- ========================================== -->
+    <div class="contenedor" id="pantallaPrincipal" style="display: none;">
+        <h2>🍕 Pide tu Combo 🍔</h2>
+
+        <!-- Datos del cliente y sus puntos -->
+        <div id="barraCliente">
+            <div>
+                👤 <strong id="textoCliente"></strong><br>
+                ⭐ Puntos acumulados: <strong id="textoPuntos">0</strong>
+            </div>
+            <button type="button" id="btnCerrarSesion" class="btn-gris">Salir</button>
+        </div>
+
+        <form id="formularioRestaurante">
+            <!-- 1. Plato Principal -->
+            <div class="seccion">
+                <label for="platoPrincipal">Elige tu plato principal:</label>
+                <select id="platoPrincipal" required>
+                    <option value="pizza">Pizza Familiar — Q95.00</option>
+                    <option value="hamburguesa">Hamburguesa con Queso — Q55.00</option>
+                </select>
+            </div>
+
+            <!-- 2. Tamaño de Bebida -->
+            <div class="seccion">
+                <label>Tamaño de la Bebida:</label>
+                <div class="opciones-inline">
+                    <input type="radio" id="bebidaP" name="tamanoBebida" value="pequena" checked>
+                    <label for="bebidaP" style="font-weight: normal;">Pequeña (+Q8.00)</label>
+
+                    <input type="radio" id="bebidaM" name="tamanoBebida" value="mediana">
+                    <label for="bebidaM" style="font-weight: normal;">Mediana (+Q12.00)</label>
+
+                    <input type="radio" id="bebidaG" name="tamanoBebida" value="grande">
+                    <label for="bebidaG" style="font-weight: normal;">Grande (+Q15.00)</label>
+                </div>
+            </div>
+
+            <!-- 3. Acompañamientos / Extras -->
+            <div class="seccion">
+                <label>¿Deseas agregar extras?</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="extraPapas" value="papas">
+                        <label for="extraPapas" style="font-weight: normal;">Papas Fritas (+Q20.00)</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="extraHelado" value="helado">
+                        <label for="extraHelado" style="font-weight: normal;">Helado de Vainilla (+Q14.00)</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- MODIFICACIÓN 3: ENTREGA A DOMICILIO O SUCURSAL -->
+            <!-- ========================================== -->
+            <div class="seccion">
+                <label>¿Cómo quieres recibir tu pedido?</label>
+                <div class="opciones-inline">
+                    <input type="radio" id="entregaSucursal" name="tipoEntrega" value="sucursal" checked>
+                    <label for="entregaSucursal" style="font-weight: normal;">🏪 Recoger en sucursal</label>
+
+                    <input type="radio" id="entregaDomicilio" name="tipoEntrega" value="domicilio">
+                    <label for="entregaDomicilio" style="font-weight: normal;">🛵 A domicilio</label>
+                </div>
+
+                <div id="campoDireccion" style="display: none; margin-top: 12px;">
+                    <label for="direccionCasa">Dirección de tu casa:</label>
+                    <textarea id="direccionCasa" rows="3" placeholder="Zona, calle, avenida, número de casa y referencias"></textarea>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- MODIFICACIÓN 2: PAGO CON PUNTOS -->
+            <!-- ========================================== -->
+            <div class="seccion">
+                <label>Forma de pago:</label>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="pagarConPuntos" disabled>
+                    <label for="pagarConPuntos" style="font-weight: normal; margin-bottom: 0;">⭐ Pagar con mis puntos</label>
+                </div>
+                <small id="infoPuntos"></small>
+            </div>
+
+            <button type="submit">Calcular Cuenta</button>
+        </form>
+
+        <!-- Recibo -->
+        <div id="reciboRespuesta"></div>
+
+        <!-- PANEL DE CONTROL DE ADMINISTRACIÓN -->
+        <div class="panel-admin">
+            <h3>📊 Administración de Ventas</h3>
+
+            <div class="opciones-inline">
+                <button type="button" id="btnVerHistorial" class="btn-azul">📋 Ver Historial</button>
+
+                <button type="button" id="btnBorrarHistorial" class="btn-rojo">
+                    🗑️ Limpiar Historial
+                </button>
+            </div>
+
+            <div id="tablaHistorial"></div>
+        </div>
+    </div>
+
+    <!-- Cargar primero la base de datos Dexie -->
+    <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+
+    <!-- Cargar después el programa JavaScript -->
+    <script src="programa.js"></script>
+
+</body>
+</html>
