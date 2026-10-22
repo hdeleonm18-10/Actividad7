@@ -1,22 +1,15 @@
-// ==========================================
-// 1. CONFIGURACIÓN DE LA BASE DE DATOS
-// ==========================================
 const db = new Dexie("RestauranteDB");
 
-// Versión 1 (la que ya tenías)
 db.version(1).stores({
     pedidos: '++id, plato, bebida, extras, total, fecha'
 });
 
-// 🆕 Versión 2: agregamos la tabla 'clientes' (llave primaria: carnet)
 db.version(2).stores({
     pedidos: '++id, plato, bebida, extras, total, fecha, carnet',
     clientes: 'carnet, nombre, puntos'
 });
 
-// ==========================================
-// CONSTANTES (precios en QUETZALES)
-// ==========================================
+
 const PRECIOS = {
     pizza: 95.00,
     hamburguesa: 55.00,
@@ -27,21 +20,17 @@ const PRECIOS = {
     helado: 14.00
 };
 
-const QUETZALES_POR_PUNTO = 15; // Se gana 1 punto por cada Q15 gastados
-const VALOR_PUNTO = 1;          // Cada punto vale Q1 al pagar con puntos
+const QUETZALES_POR_PUNTO = 15; 
+const VALOR_PUNTO = 1;          
 
 let clienteActual = null;
 
-// Pequeña función de seguridad para mostrar texto escrito por el usuario
 function escapeHTML(texto) {
     const div = document.createElement('div');
     div.textContent = texto;
     return div.innerHTML;
 }
 
-// ==========================================
-// 🆕 MODIFICACIÓN 1: INICIO DE SESIÓN
-// ==========================================
 document.getElementById('formularioLogin').addEventListener('submit', async function(event) {
     event.preventDefault();
 
@@ -53,7 +42,6 @@ document.getElementById('formularioLogin').addEventListener('submit', async func
         return;
     }
 
-    // Si el carnet ya existe conservamos sus puntos; si no, se crea con 0
     let cliente = await db.clientes.get(carnet);
     if (cliente) {
         cliente.nombre = nombre;
@@ -86,7 +74,6 @@ document.getElementById('btnCerrarSesion').addEventListener('click', function() 
     document.getElementById('pantallaLogin').style.display = "block";
 });
 
-// Si ya había una sesión abierta en la pestaña, la recuperamos
 window.addEventListener('load', async function() {
     const carnetGuardado = sessionStorage.getItem('carnetActivo');
     if (carnetGuardado) {
@@ -97,14 +84,10 @@ window.addEventListener('load', async function() {
     }
 });
 
-// ==========================================
-// CÁLCULO DEL PEDIDO
-// ==========================================
 function calcularPedido() {
     let cuentaDetalle = "<strong>🧾 DETALLE DE TU PEDIDO:</strong><br><hr>";
     let total = 0;
 
-    // Plato
     const plato = document.getElementById('platoPrincipal').value;
     if (plato === 'pizza') {
         total += PRECIOS.pizza;
@@ -114,12 +97,10 @@ function calcularPedido() {
         cuentaDetalle += `• Hamburguesa con Queso: Q${PRECIOS.hamburguesa.toFixed(2)}<br>`;
     }
 
-    // Bebida
     const bebida = document.querySelector('input[name="tamanoBebida"]:checked').value;
     total += PRECIOS[bebida];
     cuentaDetalle += `• Bebida (${bebida}): Q${PRECIOS[bebida].toFixed(2)}<br>`;
 
-    // Extras
     let listaExtras = [];
     if (document.getElementById('extraPapas').checked) {
         total += PRECIOS.papas;
@@ -135,9 +116,6 @@ function calcularPedido() {
     return { plato, bebida, listaExtras, total, cuentaDetalle };
 }
 
-// ==========================================
-// 🆕 MODIFICACIÓN 2: PUNTOS
-// ==========================================
 function actualizarPuntosEnPantalla() {
     if (!clienteActual) return;
 
@@ -158,12 +136,8 @@ function actualizarPuntosEnPantalla() {
     }
 }
 
-// Cada vez que cambie algo del formulario, revisamos si alcanzan los puntos
 document.getElementById('formularioRestaurante').addEventListener('change', actualizarPuntosEnPantalla);
 
-// ==========================================
-// 🆕 MODIFICACIÓN 3: ENTREGA A DOMICILIO / SUCURSAL
-// ==========================================
 document.querySelectorAll('input[name="tipoEntrega"]').forEach(function(radio) {
     radio.addEventListener('change', function() {
         const esDomicilio = document.getElementById('entregaDomicilio').checked;
@@ -172,9 +146,6 @@ document.querySelectorAll('input[name="tipoEntrega"]').forEach(function(radio) {
     });
 });
 
-// ==========================================
-// 2. EVENTO DEL FORMULARIO
-// ==========================================
 document.getElementById('formularioRestaurante').addEventListener('submit', async function(event) {
     event.preventDefault();
 
@@ -187,7 +158,6 @@ document.getElementById('formularioRestaurante').addEventListener('submit', asyn
     let cuentaDetalle = pedido.cuentaDetalle;
     const total = pedido.total;
 
-    // --- Entrega ---
     const tipoEntrega = document.querySelector('input[name="tipoEntrega"]:checked').value;
     const direccion = document.getElementById('direccionCasa').value.trim();
 
@@ -196,7 +166,6 @@ document.getElementById('formularioRestaurante').addEventListener('submit', asyn
         return;
     }
 
-    // --- Pago con puntos ---
     const pagaConPuntos = document.getElementById('pagarConPuntos').checked;
     const puntosNecesarios = Math.ceil(total / VALOR_PUNTO);
 
@@ -218,25 +187,19 @@ document.getElementById('formularioRestaurante').addEventListener('submit', asyn
         cuentaDetalle += `⭐ Ganaste ${puntosGanados} punto(s) con esta compra`;
     }
 
-    // --- Info de entrega en el recibo ---
     if (tipoEntrega === 'domicilio') {
         cuentaDetalle += `<br><br>🛵 <strong>Entrega a domicilio:</strong><br>${escapeHTML(direccion)}`;
     } else {
         cuentaDetalle += `<br><br>🏪 <strong>Recoger en sucursal</strong>`;
     }
 
-    // --- Actualizar puntos del cliente ---
     clienteActual.puntos = clienteActual.puntos - puntosUsados + puntosGanados;
     cuentaDetalle += `<br>⭐ Puntos disponibles ahora: <strong>${clienteActual.puntos}</strong>`;
 
-    // Mostrar el recibo en pantalla
     const areaRecibo = document.getElementById('reciboRespuesta');
     areaRecibo.innerHTML = cuentaDetalle;
     areaRecibo.style.display = "block";
 
-    // ==========================================
-    // 3. GUARDAR LOS DATOS EN LA BASE DE DATOS
-    // ==========================================
     try {
         await db.transaction('rw', db.pedidos, db.clientes, async function() {
             await db.pedidos.add({
@@ -263,9 +226,6 @@ document.getElementById('formularioRestaurante').addEventListener('submit', asyn
     actualizarPuntosEnPantalla();
 });
 
-// ==========================================
-// FUNCIONALIDAD DE ADMINISTRACIÓN
-// ==========================================
 async function actualizarHistorialPantalla() {
     const divHistorial = document.getElementById('tablaHistorial');
     const todosLosPedidos = await db.pedidos.toArray();
@@ -279,7 +239,6 @@ async function actualizarHistorialPantalla() {
     let gananciasTotales = 0;
 
     todosLosPedidos.forEach(function(pedido) {
-        // Los pedidos pagados con puntos no suman dinero a la caja
         if (!pedido.pagoConPuntos) {
             gananciasTotales += pedido.total;
         }
@@ -304,7 +263,6 @@ async function actualizarHistorialPantalla() {
     divHistorial.innerHTML = htmlContenido;
 }
 
-// BOTÓN 1: Mostrar / Ocultar Historial
 document.getElementById('btnVerHistorial').addEventListener('click', async function() {
     const divHistorial = document.getElementById('tablaHistorial');
 
@@ -316,7 +274,6 @@ document.getElementById('btnVerHistorial').addEventListener('click', async funct
     }
 });
 
-// BOTÓN 2: Vaciar el historial de pedidos (los clientes y sus puntos se conservan)
 document.getElementById('btnBorrarHistorial').addEventListener('click', async function() {
     const confirmar = confirm("⚠ ¿Estás seguro de que deseas eliminar TODOS los pedidos del historial?");
 
@@ -327,5 +284,4 @@ document.getElementById('btnBorrarHistorial').addEventListener('click', async fu
     }
 });
 
-// Revisar puntos al cargar por primera vez
 actualizarPuntosEnPantalla();
